@@ -1,0 +1,24 @@
+# List of SharePoint site URLs
+$Sites = 
+"https://abc.sharepoint.com/sites/dev2",
+"https://abc.sharepoint.com/sites/dev1"
+""
+# Loop through each site
+for ($i = 0; $i -lt $Sites.Length; $i++) {
+
+    if (!$Sites[$i]) { Write-Host "Sites loop ends." -ForegroundColor DarkGray; break; }
+
+    Write-host "Connecting to Site: " $Sites[$i] -ForegroundColor Magenta
+    Connect-PnPOnline -Url $Sites[$i] -Interactive
+    Write-Host "Retrieving SharePoint groups..." -ForegroundColor Yellow
+    $groupsList = Get-PnPGroup
+
+    foreach ($grp in $groupsList)
+    {
+        #Write-Host $grp.Title
+        Write-Host "Deleting group '$($grp.Title)'..." -ForegroundColor Red
+        Remove-PnPGroup -Identity $grp -Force
+        Write-Host "Deleted group '$($grp.Title)' - '$($grp.OwnerTitle)' ..." -ForegroundColor Green
+    }
+  Write-Host "All groups removed from: $($Sites[$i])" -ForegroundColor Green
+}
