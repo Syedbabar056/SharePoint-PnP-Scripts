@@ -24,13 +24,9 @@ Though to have a quick way to remove all groups from a site before resetting per
 # Latest Version gives complete detail on Site Validation, filtering of groups, user confirmation on taking action 
 # Output Results
 /*⛔ These groups were skipped due to exclusion rules:
-
 SiteUrl                                          GroupTitle        Reason
 -------                                          ----------        ------
 https://abc.sharepoint.com/sites/dev dev Members  Matched exclusion pattern: Members
-https://abc.sharepoint.com/sites/dev dev Owners   Matched exclusion pattern: Owners
-https://abc.sharepoint.com/sites/dev dev Visitors Matched exclusion pattern: Visitors
-https://abc.sharepoint.com/sites/dev1  dev1 Members   Matched exclusion pattern: Members
 https://abc.sharepoint.com/sites/dev1  dev1 Owners    Matched exclusion pattern: Owners
 https://abc.sharepoint.com/sites/dev1  dev1 Visitors  Matched exclusion pattern: Visitors
 
