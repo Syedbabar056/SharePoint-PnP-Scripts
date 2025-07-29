@@ -1,3 +1,12 @@
+## 🙋‍♂️ Author
+**Syed Babar**  
+Power Platform & SharePoint Enthusiast  
+🔗 linkedin.com/in/syedbabar056  
+📫 https://github.com/Syedbabar056
+
+🤝 Contributions
+Feel free to fork, suggest improvements, or share how you used it in your org!
+
 # SharePoint-PnP-Scripts
 PnP PowerShell scripts to automate SharePoint Online permissions and governance.
 PowerShell version - 7.5.2 // Can Run in VS CODE using Powershell Extension -- Terminal 
@@ -22,15 +31,7 @@ This PowerShell script uses PnP PowerShell to **connect to multiple SharePoint O
 Though to have a quick way to remove all groups from a site before resetting permission models or rebuilding group structures. Helpful in cleanup process on dev sites.
 # Writehost for understanding what each action item does.
 # Latest Version
-gives complete detail on Site Validation, filtering of groups, user confirmation on taking action 
-# Output Results
-/*⛔ These groups were skipped due to exclusion rules:
-SiteUrl                                          GroupTitle        Reason
--------                                          ----------        ------
-https://abc.sharepoint.com/sites/dev dev Members  Matched exclusion pattern: Members
-https://abc.sharepoint.com/sites/dev1  dev1 Owners    Matched exclusion pattern: Owners
-https://abc.sharepoint.com/sites/dev1  dev1 Visitors  Matched exclusion pattern: Visitors
-
-❓ How would you like to delete groups? Type 'All' for bulk delete or 'Each' for group-by-group: Each
-⚠️ Are you sure you want to delete group 'abc - Customer Onboarding - C'? [Y/N]: N
-❌ Skipped deleting group 'abc - Customer Onboarding - C'
+This PowerShell script helps SharePoint administrators safely clean up unwanted SharePoint groups from multiple sites using PnP PowerShell. It includes options to delete groups **individually** or **all at once**, with safeguards and visibility on what will be skipped. 
+# Customization
+Update the $Sites list with your site URLs (Tenant Name, Site collection name)
+Modify $ExcludedGroupPatterns if you want to protect different groups
