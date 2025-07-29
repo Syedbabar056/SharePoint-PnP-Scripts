@@ -21,7 +21,8 @@ This PowerShell script uses PnP PowerShell to **connect to multiple SharePoint O
 ## Reason for building this
 Though to have a quick way to remove all groups from a site before resetting permission models or rebuilding group structures. Helpful in cleanup process on dev sites.
 # Writehost for understanding what each action item does.
-# Latest Version gives complete detail on Site Validation, filtering of groups, user confirmation on taking action 
+# Latest Version
+gives complete detail on Site Validation, filtering of groups, user confirmation on taking action 
 # Output Results
 /*⛔ These groups were skipped due to exclusion rules:
 SiteUrl                                          GroupTitle        Reason
