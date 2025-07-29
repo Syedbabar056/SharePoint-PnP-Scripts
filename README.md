@@ -4,7 +4,7 @@ Power Platform & SharePoint Enthusiast
 🔗 https://www.linkedin.com/in/syedbabar056
 📫 https://github.com/Syedbabar056
 
-##🤝 Contributions
+## 🤝 Contributions
 Feel free to fork, suggest improvements, or share how you used it in your org!
 
 # SharePoint-PnP-Scripts
