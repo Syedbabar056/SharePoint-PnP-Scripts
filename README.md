@@ -1,7 +1,7 @@
 ## 🙋‍♂️ Author
 **Syed Babar**  
 Power Platform & SharePoint Enthusiast  
-🔗 linkedin.com/in/syedbabar056  
+🔗 https://www.linkedin.com/in/syedbabar056
 📫 https://github.com/Syedbabar056
 
 🤝 Contributions
