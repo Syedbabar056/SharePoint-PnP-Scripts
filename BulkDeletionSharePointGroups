@@ -1,24 +1,97 @@
 # List of SharePoint site URLs
 $Sites = 
-"https://abc.sharepoint.com/sites/dev2",
-"https://abc.sharepoint.com/sites/dev1"
+"https://abc.sharepoint.com/sites/dev",
+"https://abc.sharepoint.com/sites/dev1",
 ""
-# Loop through each site
-for ($i = 0; $i -lt $Sites.Length; $i++) {
 
-    if (!$Sites[$i]) { Write-Host "Sites loop ends." -ForegroundColor DarkGray; break; }
+# Group name patterns to exclude (case-insensitive match)
+$ExcludedGroupPatterns = @("Owners", "Visitors", "Members", "Admins", "Service Account")
 
-    Write-host "Connecting to Site: " $Sites[$i] -ForegroundColor Magenta
-    Connect-PnPOnline -Url $Sites[$i] -Interactive
-    Write-Host "Retrieving SharePoint groups..." -ForegroundColor Yellow
+# Store groups
+$skippedGroups = @()
+$deletableGroups = @()
+
+foreach ($site in $Sites) {
+    if (!$site) { Write-Host "Sites loop ended." -ForegroundColor DarkGray; break }
+
+    Write-Host "`n🌐 Connecting to SharePoint Online Site: $site" -ForegroundColor Cyan
+    Connect-PnPOnline -Url $site -UseWebLogin
+
+    Write-Host "📋 Fetching SharePoint groups..." -ForegroundColor Yellow
     $groupsList = Get-PnPGroup
 
-    foreach ($grp in $groupsList)
-    {
-        #Write-Host $grp.Title
-        Write-Host "Deleting group '$($grp.Title)'..." -ForegroundColor Red
-        Remove-PnPGroup -Identity $grp -Force
-        Write-Host "Deleted group '$($grp.Title)' - '$($grp.OwnerTitle)' ..." -ForegroundColor Green
+    foreach ($grp in $groupsList) {
+        $matchedPattern = $ExcludedGroupPatterns | Where-Object { $grp.Title -match $_ }
+
+        if ($matchedPattern) {
+            $skippedGroups += [PSCustomObject]@{
+                SiteUrl = $site
+                GroupTitle = $grp.Title
+                Reason = "Matched exclusion pattern: $matchedPattern"
+            }
+        } else {
+            $deletableGroups += [PSCustomObject]@{
+                SiteUrl = $site
+                GroupTitle = $grp.Title
+                GroupRef = $grp
+            }
+        }
     }
-  Write-Host "All groups removed from: $($Sites[$i])" -ForegroundColor Green
+}
+
+# Step 1: Show skipped groups
+if ($skippedGroups.Count -gt 0) {
+    Write-Host "`n⛔ These groups were skipped due to exclusion rules:" -ForegroundColor Yellow
+    $skippedGroups | Sort-Object SiteUrl, GroupTitle | Format-Table SiteUrl, GroupTitle, Reason -AutoSize
+} else {
+    Write-Host "`n✅ No groups matched exclusion rules." -ForegroundColor Green
+}
+
+# Step 2: Proceed with deletion prompt
+$deletionMode = Read-Host "`n❓ How would you like to delete groups? Type 'All' for bulk delete or 'Each' for group-by-group"
+
+if ($deletionMode -notin @("All", "Each")) {
+    Write-Host "❌ Invalid input. Please run again and choose either 'All' or 'Each'" -ForegroundColor Red
+    return
+}
+
+if ($deletableGroups.Count -eq 0) {
+    Write-Host "ℹ️ No deletable groups found after filtering." -ForegroundColor Gray
+    return
+}
+
+if ($deletionMode -eq "Each") {
+    foreach ($entry in $deletableGroups) {
+        Write-Host "`n🔗 Site: $($entry.SiteUrl)" -ForegroundColor Cyan
+        Connect-PnPOnline -Url $entry.SiteUrl -UseWebLogin
+
+        $confirm = Read-Host "⚠️ Are you sure you want to delete group '$($entry.GroupTitle)'? [Y/N]"
+        if ($confirm -ne "Y") {
+            Write-Host "❌ Skipped deleting group '$($entry.GroupTitle)'" -ForegroundColor Gray
+            continue
+        }
+
+        Write-Host "🗑 Deleting group '$($entry.GroupTitle)'..." -ForegroundColor Red
+        #Remove-PnPGroup -Identity $entry.GroupRef -Force
+    }
+
+    Write-Host "`n✅ All selected groups processed in 'Each' mode." -ForegroundColor Green
+}
+else {
+    # Show list before bulk delete
+    Write-Host "`n🧾 The following groups are marked for deletion:" -ForegroundColor Cyan
+    $deletableGroups | Sort-Object SiteUrl, GroupTitle | Format-Table SiteUrl, GroupTitle -AutoSize
+
+    $bulkConfirm = Read-Host "`n⚠️ Are you sure you want to delete ALL of these groups? Type 'YES' to confirm"
+    if ($bulkConfirm -eq "YES") {
+        foreach ($entry in $deletableGroups) {
+            Write-Host "🗑 Deleting '$($entry.GroupTitle)' from $($entry.SiteUrl)" -ForegroundColor Red
+            Connect-PnPOnline -Url $entry.SiteUrl -UseWebLogin
+           # Remove-PnPGroup -Identity $entry.GroupRef -Force
+        }
+
+        Write-Host "`n✅ Bulk deletion completed." -ForegroundColor Green
+    } else {
+        Write-Host "❌ Bulk deletion canceled." -ForegroundColor Yellow
+    }
 }
