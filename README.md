@@ -35,3 +35,24 @@ This PowerShell script helps SharePoint administrators safely clean up unwanted 
 ## Customization
 Update the $Sites list with your site URLs (Tenant Name, Site collection name)
 Modify $ExcludedGroupPatterns if you want to protect different groups
+
+# **Third Script**
+**Clone SharePoint User Permissions Across Different Site Collections**
+This PowerShell script allows you to clone user permissions from one site collection to another using PnP PowerShell. It scans the selected scope (site, library, or folder), checks if users already exist in the destination site, and adds them if not.
+##⚙️ What It Does
+- Accepts multiple site collections for cloning
+- Prompts for confirmation before scanning each site
+- Scans site, list, and folder levels to capture permissions
+- Ensures users are added to the correct SharePoint groups if missing
+- Logs in the terminal where users are being added
+- Skips duplicate additions if the user already exists
+
+# **Third Script – v2**
+**Enhanced Cloning with Inactive User Handling**
+This is the updated version of the Clone Permissions script. It includes all functionality from v1, plus enhanced handling for inactive or departed users.
+
+## ⚙️ What’s New in v2
+- Detects inactive or departed users (null user objects from Get-PnPUser)
+- Skips adding those users to the destination site (with a clean message in the terminal)
+- More informative Write-Host logs so you know exactly which object is being processed
+- Refined terminal output for easier tracking during large migrations
